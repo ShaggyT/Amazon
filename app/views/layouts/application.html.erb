@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Amazon</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        <%= link_to('About Us', about_path, { id: 'abc', class: 'xyz' }) %>
+        <%= link_to 'Contact Us', contact_path %>
+      </nav>
+    </header>
+
+
+    <hr>
+    <%= yield %>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<h1>Contact Us</h1>
+
+<%# the first argument for `form_tag` is the `action` url for the form. Forms
+    with `form_tag` will use `POST` for their `method` by default %>
+<%= form_tag contact_path do  %>
+  <div>
+    <%= label_tag :name %>
+    <%= text_field_tag :name %>
+  </div>
+  <div>
+    <%= label_tag :email %>
+    <%= text_field_tag :email %>
+  </div>
+  <div>
+    <%= label_tag :message %>
+    <%= text_area_tag :message %>
+  </div>
+  <%= submit_tag 'Contact Us' %>
+<% end %>
+
+
+<% if @name && @email && @message %>
+	<h1> Thank you for contacting us!</h1>
+<% end %>
