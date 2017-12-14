@@ -1,0 +1,36 @@
+<h1>Admin Dashboard</h1>
+
+<table>
+  <tbody>
+    <tr>
+      <th>Number of Products</th>
+      <th>Number of Reviews</th>
+      <th>Number of Users</th>
+    </tr>
+
+    <tr>
+      <td><%= @number_of_products %></td>
+      <td><%= @number_of_users %></td>
+      <td><%= @number_of_reviews %></td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<table>
+  <tbody>
+    <tr>
+      <th>id</th>
+      <th>Title</th>
+
+    </tr>
+
+    <% @products.each do |product| %>
+      <tr>
+        <td><%= product.id%></td>
+        <td><%= link_to product.title, product_path(product) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
