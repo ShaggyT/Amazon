@@ -12,9 +12,16 @@ Rails.application.routes.draw do
   resources :users, only: [:new, :create]
 
   resources :products do
-    resources :reviews, only: [:create, :destroy, :edit]
-  end
 
+    resources :reviews, only: [:create, :destroy, :edit, :update] do
+      member do
+        patch :toggle_hidden
+        # toggle_hidden_product_review_path
+        # POST	/products/:product_id/reviews/:id/toggle_hidden(.:format)
+        # reviews#toggle_hidden
+      end
+    end
+  end
 
 
   # the line below defines a Rails route. The routes says here: if we receive

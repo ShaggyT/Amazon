@@ -1,7 +1,7 @@
 class ReviewsController < ApplicationController
   before_action :authenticate_user!
   before_action :find_product
-  before_action :find_review, only: [:destroy, :edit]
+  before_action :find_review, only: [:destroy, :edit, :toggle_hidden, :update]
   before_action :authorize_user!, only: [:destroy, :edit]
 
 
@@ -24,23 +24,28 @@ class ReviewsController < ApplicationController
   end
 
   def destroy
-    @review = Review.find params[:id]
+    # @review = Review.find params[:id]
     @review.destroy
     redirect_to product_path(@product)
   end
 
+
   def edit
-    # then to the show page
-   if @review.is_hidden?
-     @review.is_hidden = false
-     @review.save
-     redirect_to product_path(@product)
+
+  end
+
+  def toggle_hidden
+    @review.toggle!(:is_hidden)
+    redirect_to product_path(@product)
+  end
+
+  def update
+   if @review.update(review_params)
+     redirect_to product_path
    else
-     @review.is_hidden = true
-     @review.save
-     redirect_to product_path(@product)
+     render :edit
    end
-end
+  end
 
   private
   def review_params

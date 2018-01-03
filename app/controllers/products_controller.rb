@@ -1,9 +1,8 @@
 class ProductsController < ApplicationController
 
-    before_action :authenticate_user!, except: [:show, :index]
-    before_action :find_product, only: [:show, :edit, :update, :destroy]
-    before_action :authorize_user!, only: [:edit, :update, :destroy]
-
+  before_action :authenticate_user!, except: [:show, :index, :edit]
+  before_action :find_product, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_user!, only: [:edit, :update, :destroy]
 
   def new
     @product = Product.new
@@ -22,7 +21,6 @@ class ProductsController < ApplicationController
   end
 
   def show
-    @product = Product.find params[:id]
     @product.price = @product.price.round(2)
     # <%= form.number_field :price, step: :any %>
     @reviews = @product.reviews.order(created_at: :desc)
@@ -35,14 +33,12 @@ class ProductsController < ApplicationController
   end
 
   def destroy
-      # @product = Product.find params[:id]
-      @product.destroy
-      redirect_to products_path
+    @product.destroy
+    redirect_to products_path, alert: 'Product deleted'
   end
 
   def edit
     @product = Product.find params[:id]
-
   end
 
   def update

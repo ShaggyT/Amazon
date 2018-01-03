@@ -1,5 +1,6 @@
-<h2><%= @product.title %></h2>
-<h2><%= @product.description %></h2>
+<h1> Product Form </h1>
+<h3><%= @product.title %></h3>
+<h3><%= @product.description %></h3>
 <p>By <%= @product.user&.full_name || "[deleted]" %></p>
 <h2>price:$ <%= @product.price %></h2>
 <% if can?(:manage, @product) %>
@@ -13,7 +14,9 @@
     )
   %>
 <% end %>
+<hr>
 
+<h1>Review Form</h1>
 <%= form_for [@product, @review] do |f| %>
   <% if @review.errors.present? %>
     <p>
@@ -28,55 +31,43 @@
 
   <%= f.submit %>
 <% end %>
+<hr>
 
 
-
-
+<h1> Review </h1>
 <div class="review-list">
-
   <div>
-      <% @reviews.each do |review| %>
-        <% if review.is_hidden? %>
-        <div style="color:lightgrey">
+    <% @reviews.each do |review| %>
+      <% if can?(:read, review) %>
+
+        <div <% if review.is_hidden %> style="color:lightgrey"<% end %>>
+
           <div>
             <p><strong>Rating:</strong> <%= review.rating %></p>
             <p><strong>Reviews:</strong> <%= review.body %></p>
             <p><strong>User:</strong><%= review.user.full_name %></p>
             <p><strong>Created At:</strong> <%= time_ago_in_words(review.created_at) %> ago</p>
-            <% if can?(:destroy, review)%>
-              <%= link_to(
-                'Delete',
-                product_review_path(@product, review),
-                data: {confirm: 'Are you sure?'},
-                method: :delete
-              ) %>
-            <% end %>
-            <% if can?(:manage, review) %>
-              <%= link_to 'Hide/ Unhide', edit_product_review_path(@product, review) %>
-            <% end %>
-        </div>
-      </div>
-        <% elsif !review.is_hidden?  %>
 
-            <div>
-              <p><strong>Rating:</strong> <%= review.rating %></p>
-              <p><strong>Reviews:</strong> <%= review.body %></p>
-              <p><strong>User:</strong><%= review.user.full_name %></p>
-              <p><strong>Created At:</strong> <%= time_ago_in_words(review.created_at) %> ago</p>
-              <% if can?(:destroy, review)%>
-                <%= link_to(
+            <% if can?(:manage, @product) %>
+              <%= link_to 'Hide/ Unhide', toggle_hidden_product_review_path(@product, review),
+              method: :patch %>
+           <% end %>
+
+            <% if can?(:manage, review) %>
+              <%= link_to 'Edit', edit_product_review_path(@product, review) %>
+              <%=
+                link_to(
                   'Delete',
                   product_review_path(@product, review),
-                  data: {confirm: 'Are you sure?'},
-                  method: :delete
-                ) %>
-              <% end %>
-              <% if can?(:manage, review) %>
-                <%= link_to 'Hide/ Unhide', edit_product_review_path(@product, review) %>
-              <% end %>
+                  method: :delete,
+                  data: {confirm: 'Are you sure?'}
+                )
+              %>
+            <% end %>
           </div>
-
-        <% end %>
+        </div>
       <% end %>
-    </div>
+      <hr>
+    <% end %>
+  </div>
 </div>
