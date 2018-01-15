@@ -9,7 +9,24 @@
  * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
- *
+ *= require chosen
  *= require_tree .
  *= require_self
  */
+
+ html {
+   font-family: Helvetica, sans-serif;
+ }
+
+ * {
+   font-family: inherit;
+ }
+
+ .question-list-item {
+   margin-bottom: 0.5rem;
+ }
+
+
+
+ @import 'bootstrap';
+ @import 'font-awesome';

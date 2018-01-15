@@ -1,8 +1,24 @@
 class Product < ApplicationRecord
   # validation will be run before save
   has_many :reviews, dependent: :destroy
+
+  has_many :likes, dependent: :destroy
+
+  has_many :likers, through: :likes, source: :user
+
+  has_many :favourites, dependent: :destroy
+
+  has_many :favouriters, through: :favourites, source: :user
+
+  has_many :votes, dependent: :destroy
+  has_many :voters, through: :votes, source: :user
+
+  has_many :taggings, dependent: :destroy
+  has_many :tags, through: :taggings
+
   # belongs_to :user, optional: true
   belongs_to :user
+
   validates(
     :title,
     presence: {message: "must be given"},
@@ -18,6 +34,7 @@ class Product < ApplicationRecord
   scope :search, -> (word){
    where("title ILIKE '%#{word}%' or description ILIKE '%#{word}%'")
   }
+
 
   # def self.search(key)
   #  where("title ILIKE '%#{word}%' or description ILIKE '%#{word}%'")
@@ -47,6 +64,10 @@ class Product < ApplicationRecord
     end
   end
 
+
+  def votes_result
+    votes.where({ is_up: true }).count - votes.where({ is_up: false }).count
+  end
 
   after_initialize :set_defaults
   before_validation :capitalize

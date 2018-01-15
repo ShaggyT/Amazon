@@ -1,0 +1,9 @@
+<p>Hello <%= @product.user.full_name %>,</p>
+
+<p> Here is the review of your product! </p>
+<p> Review: <%= @review.body %></p>
+<p> Author: <%= @review_owner.full_name  %></p>
+<p>Click <%= link_to "Review", product_url(@product) %> to view your post.</p>
+
+<p>Regards,</p>
+<p>Amazon Team</p>

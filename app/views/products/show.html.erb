@@ -1,73 +1,137 @@
-<h1> Product Form </h1>
-<h3><%= @product.title %></h3>
-<h3><%= @product.description %></h3>
-<p>By <%= @product.user&.full_name || "[deleted]" %></p>
-<h2>price:$ <%= @product.price %></h2>
-<% if can?(:manage, @product) %>
-<%= link_to 'Edit', edit_product_path(@product) %>
-  <%=
-    link_to(
-      'Delete',
-      product_path(@product),
-      method: :delete,
-      data: {confirm: 'Are you sure?'}
-    )
-  %>
-<% end %>
-<hr>
-
-<h1>Review Form</h1>
-<%= form_for [@product, @review] do |f| %>
-  <% if @review.errors.present? %>
-    <p>
-      <%= @review.errors.full_messages.join(', ') %>
-    </p>
-  <% end %>
-
-  <div>
-    <p> Comments:<%= f.text_area :body %></p>
-    <p> Rating: <%= f.number_field :rating , in:1..5 %></p>
+<div class="container">
+  <div class="contaienr">
+    <h6> Product Form </h6>
+  </div>
+  <p><%= @product.title %></p>
+  <p><%= @product.description %></p>
+  <p>By <%= @product.user&.full_name || "[deleted]" %></p>
+  <p>price:$ <%= @product.price %></p>
+  <small>
+    <strong>Tags:</strong>
+    <% @product.tags.each do |tag| %>
+      <%= link_to tag.name, tag_path(tag) %>
+    <% end %>
+  </small>
+  <div class="mt-2">
+    <% if can?(:crud, @product) %>
+    <%= link_to 'Edit', edit_product_path(@product) %>
+      <%=
+        link_to(
+          'Delete',
+          product_path(@product),
+          method: :delete,
+          data: {confirm: 'Are you sure?'}
+        )
+      %>
+    <% end %>
   </div>
 
-  <%= f.submit %>
+
+<div class="">
+  <% if can?(:like, @product) %>
+  <% if @user_like %>
+    <%= link_to fa_icon("thumbs-up 1x"), like_path(@user_like), method: :delete %>
+  <% else %>
+    <%= link_to fa_icon("thumbs-o-up 1x"), product_likes_path(@product), method: :post %>
+  <% end %>
 <% end %>
+(<%= pluralize(@product.likes.count, 'like') %>)
+
+
+<% if can?(:favourite, @product) %>
+   <% if @user_favourite %>
+     <%= link_to fa_icon("heart"), favourite_path(@user_favourite), method: :delete, class: "text-danger" %>
+   <% else %>
+     <%= link_to fa_icon("heart-o"), product_favourites_path(@product), method: :post, class: "text-danger" %>
+   <% end %>
+ <% end %>
+ (<%= pluralize(@product.favourites.count, 'favourite') %>)
+<%= product_vote(@user_vote, @product).html_safe if user_signed_in? %>
+</div>
+</div>
 <hr>
 
-
-<h1> Review </h1>
-<div class="review-list">
-  <div>
-    <% @reviews.each do |review| %>
-      <% if can?(:read, review) %>
-
-        <div <% if review.is_hidden %> style="color:lightgrey"<% end %>>
-
-          <div>
-            <p><strong>Rating:</strong> <%= review.rating %></p>
-            <p><strong>Reviews:</strong> <%= review.body %></p>
-            <p><strong>User:</strong><%= review.user.full_name %></p>
-            <p><strong>Created At:</strong> <%= time_ago_in_words(review.created_at) %> ago</p>
-
-            <% if can?(:manage, @product) %>
-              <%= link_to 'Hide/ Unhide', toggle_hidden_product_review_path(@product, review),
-              method: :patch %>
-           <% end %>
-
-            <% if can?(:manage, review) %>
-              <%= link_to 'Edit', edit_product_review_path(@product, review) %>
-              <%=
-                link_to(
-                  'Delete',
-                  product_review_path(@product, review),
-                  method: :delete,
-                  data: {confirm: 'Are you sure?'}
-                )
-              %>
-            <% end %>
-          </div>
-        </div>
+<div class="container">
+  <div class="form">
+    <h6>Review Form</h6>
+    <%= form_for [@product, @review] do |f| %>
+      <% if @review.errors.present? %>
+        <p>
+          <%= @review.errors.full_messages.join(', ') %>
+        </p>
       <% end %>
-      <hr>
+
+      <div>
+        <div>
+          <%= f.label :comments %>
+          <%= f.text_area :body, class: 'form-control' %>
+        </div>
+        <p class=" mt-2"> Rating: <%= f.number_field :rating , in:1..5 %></p>
+      </div>
+
+      <div class=" mt-2">
+        <%= f.submit "Create a Review", class: "btn btn-secondary btn-sm" %>
+      </div>
     <% end %>
+    <hr>
+  </div>
+</div>
+
+<div class="container">
+  <h6> Review </h6>
+  <div class="review-list">
+    <div>
+      <% @reviews.each do |review| %>
+        <% if can?(:read, review) %>
+
+          <div <% if review.is_hidden %> style="color:lightgrey"<% end %>>
+
+            <div>
+              <p><strong>Rating:</strong> <%= review.rating %></p>
+              <p><strong>Reviews:</strong> <%= review.body %></p>
+              <p><strong>User:</strong><%= review.user.full_name %></p>
+              <p><strong>Created At:</strong> <%= time_ago_in_words(review.created_at) %> ago</p>
+
+              <% if can?(:crud, @product) %>
+                <%= link_to 'Hide/ Unhide', toggle_hidden_product_review_path(@product, review),
+                method: :patch %>
+             <% end %>
+
+              <% if can?(:crud, review) %>
+                <%= link_to 'Edit', edit_product_review_path(@product, review) %>
+                <%=
+                  link_to(
+                    'Delete',
+                    product_review_path(@product, review),
+                    method: :delete,
+                    data: {confirm: 'Are you sure?'}
+                  )
+                %>
+              <% end %>
+            </div>
+          </div>
+
+          <% if can?(:love, review) %>
+            <% if review.loves.find_by_user_id(current_user) %>
+              <%= link_to fa_icon("star"), love_path(review.loves.find_by_user_id(current_user)), method: :delete, class:"text-warning" %>
+
+            <% else %>
+              <%= link_to fa_icon("star-o"), product_review_loves_path(@product, review), method: :post, class:"text-warning"  %>
+            <% end %>
+          <% end %>
+
+          <% if can?(:review_vote, review) %>
+            <% user_review_vote = current_user.review_votes.find_by_review_id(review) %>
+            <%= review_vote(user_review_vote, review).html_safe if user_signed_in? %>
+          <%else %>
+            <span>
+              Review Votes: <%= review.review_votes_result %>
+            </span>
+          <% end %>
+
+        <% end %>
+
+      <% end %>
+    </div>
   </div>
 </div>

@@ -4,13 +4,14 @@
     <title>Amazon</title>
     <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
+      <%= stylesheet_link_tag    'application', media: 'all' %>
+      <%= javascript_include_tag 'application' %>
+    </head>
+
 
   <body>
 
-      <nav>
+      <nav style="margin: 10px; font-size: 10px">
         <a href="/">Home</a>
         |
         <%= link_to('About Us', about_path, { id: 'abc', class: 'xyz' }) %>
@@ -22,14 +23,24 @@
         |
         <%= link_to 'All Products', products_path %>
         |
+        <% if user_signed_in? %>
+        <%= link_to 'My Liked Products', products_path({liked: true}) %>
+        <% end %>
         |
-      <%= link_to 'Contact Us', contact_path %>
-      |
+        <% if user_signed_in? %>
+        <%= link_to 'My Favourited Products', products_path({favourited: true}) %>
+        <% end %>
+        |
+        <% if user_signed_in? %>
+        <%= link_to 'Tags', tags_path %>
+        <% end %>
+        |
+
       <% if user_signed_in? %>
         <span>Hello, <%= current_user.first_name %>!</span>
         |
         <% if current_user.is_admin? %>
-        |
+
         <%= link_to 'Dashboard', admin_panel_index_path %>
       <% end %>
         |
@@ -44,7 +55,7 @@
         |
         <%= link_to 'Sign Up', new_user_path %>
       <% end %>
-      <hr>
+
 
       <% if flash[:notice].present? || flash[:alert].present? %>
         <div class="flash-message">

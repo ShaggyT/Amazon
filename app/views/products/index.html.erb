@@ -1,7 +1,16 @@
-<h1>All Products</h1>
+<div class="container">
+  <% if @liked %>
+    <h3 >My Liked Products</h3>
+    <% elsif @favourited %>
+      <h3 >My Favourite Products</h3>
+    <% else %>
+      <h3>All Products</h3>
+  <% end %>
 
-<% @products.each do |product| %>
-  <div class="product-list-item">
-    <%= link_to product.title, product_path(product) %>
-  </div>
-<% end %>
+
+  <% @products.each do |product| %>
+    <div class="product-list-item">
+      <%= link_to product.title, product_path(product) %>
+    </div>
+  <% end %>
+</div>

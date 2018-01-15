@@ -16,6 +16,9 @@ class ReviewsController < ApplicationController
     @review.user = current_user
 
     if @review.save
+      # ReviewsMailer.notify_product_owner_about_review(@review).deliver_now
+      ReviewMailerJob.set(wait: 30.seconds).perform_later
+      # ReviewMailerJob.perform_later(@review.id)
       redirect_to product_path(@product)
     else
       @reviews = @product.reviews.order(created_at: :desc)

@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  match "/delayed_job", to: DelayedJobWeb, anchor: false, via: [:get, :post]
+  # get 'tags/index'
+  get '/tags' => 'tags#index'
+  # get 'tags/show'
+  get '/tags/:id' => 'tags#show', as: :tag
+
   # Admin related routes
   namespace :admin do
 
@@ -11,15 +17,27 @@ Rails.application.routes.draw do
   # User related routes
   resources :users, only: [:new, :create]
 
-  resources :products do
+  # resources :products do
+  #   resources :reviews, only: [:create, :destroy, :edit, :update] do
+  #     resources :loves, only: [:create, :destroy], shallow: true
+  #   end
+  # end
 
+  resources :products do
+    resources :likes, only: [:create, :destroy], shallow: true
+    resources :favourites, only: [:create, :destroy], shallow: true
+    resources :votes, only: [:create, :update, :destroy], shallow: true
     resources :reviews, only: [:create, :destroy, :edit, :update] do
+      resources :loves, only: [:create, :destroy], shallow: true
       member do
         patch :toggle_hidden
         # toggle_hidden_product_review_path
         # POST	/products/:product_id/reviews/:id/toggle_hidden(.:format)
         # reviews#toggle_hidden
       end
+    end
+    resources :reviews, only: [], shallow: true do
+        resources :review_votes, only: [:create, :update, :destroy], shallow: true
     end
   end
 

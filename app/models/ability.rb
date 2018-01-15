@@ -29,19 +29,46 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
+    alias_action :create, :read, :update, :destroy, :to => :crud
 
-      can :manage, Product do |product|
+      can :crud, Product do |product|
         user == product.user
       end
 
-      can :manage, Review do |review|
+      can :crud, Review do |review|
         review.product.user == user || review.user == user
       end
 
       can :read, Review do |review|
-          !review.is_hidden 
+          !review.is_hidden
+      end
+
+      can :crud, Like do |like|
+        like.user == user
+      end
+
+      can :like, Product do |product|
+         product.user != user
+      end
+      can :crud, Favourite do |favourite|
+        favourite.user == user
+      end
+
+      can :favourite, Product do |product|
+        product.user != user
+      end
+
+      can :crud, Love do |love|
+        love.user == user
+      end
+
+      can :love, Review do |review|
+        review.user != user
+      end
+
+      can :review_vote, Review do |review|
+        review.user != user || (review.product.user == user && review.user != user)
       end
 
   end
-
 end

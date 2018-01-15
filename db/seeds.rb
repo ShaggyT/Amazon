@@ -56,6 +56,7 @@ products.each do |product|
   end
 end
 
+
 reviews = Review.all
 
 puts Cowsay.say("Create #{reviews.count} reviews", :moose)

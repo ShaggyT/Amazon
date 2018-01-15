@@ -14,6 +14,8 @@ class ProductsController < ApplicationController
     @product.user = current_user
 
     if @product.save
+      ProductsMailer.notify_product_owner(@product).deliver_now
+
       redirect_to product_path(@product)
     else
       render :new
@@ -23,13 +25,28 @@ class ProductsController < ApplicationController
   def show
     @product.price = @product.price.round(2)
     # <%= form.number_field :price, step: :any %>
-    @reviews = @product.reviews.order(created_at: :desc)
+    # @reviews = @product.reviews.order(created_at: :desc)
+    @reviews = @product.reviews.sort{|b,a| a.review_votes_result <=> b.review_votes_result}
+
     @review = Review.new
+    @user_like = current_user.likes.find_by_product_id(@product) if user_signed_in?
+    @user_favourite = current_user.favourites.find_by_product_id(@product) if user_signed_in?
+    @user_vote = current_user.votes.find_by_product_id(@product) if user_signed_in?
 
   end
 
   def index
-    @products = Product.all.order(created_at: :desc)
+    @liked = params[:liked]
+    @favourited = params[:favourited]
+      #this is get from application.html.erb `{liked: true}`
+     if @liked
+       @products = current_user.liked_products
+     elsif @favourited
+       @products = current_user.favourited_products
+     else
+       @products = Product.all.order(created_at: :desc)
+     end
+
   end
 
   def destroy
@@ -50,9 +67,10 @@ class ProductsController < ApplicationController
     end
   end
 
+
   private
   def product_params
-    params.require(:product).permit(:title, :description, :price)
+    params.require(:product).permit(:title, :description, :price, { tag_ids: [] })
   end
 
   def find_product
@@ -64,7 +82,7 @@ class ProductsController < ApplicationController
     # the logged in user as long as the method `current_user`
     # is defined for controllers.
 
-    unless can?(:manage, @product)
+    unless can?(:crud, @product)
       flash[:alert] = "Access Denied!"
       redirect_to home_path
     end

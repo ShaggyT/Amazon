@@ -1,0 +1,6 @@
+<div class="container">
+  <h3><%= @tag.name %></h3>
+  <% @products.each do |product| %>
+    <%= link_to product.title, product_path(product) %>
+  <% end %>
+</div>

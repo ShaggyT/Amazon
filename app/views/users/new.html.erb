@@ -1,31 +1,34 @@
-<h1>Sign Up</h1>
+<div class="container">
+  <h3>Sign Up</h3>
 
-<%= form_for @user do |f| %>
-  <% if @user.errors.present? %>
-    <p>
-      <%= @user.errors.full_messages.join(', ') %>
-    </p>
+  <%= form_for @user do |f| %>
+    <% if @user.errors.present? %>
+      <p>
+        <%= @user.errors.full_messages.join(', ') %>
+      </p>
+    <% end %>
+
+    <div>
+      <%= f.label :first_name %>
+      <%= f.text_field :first_name %>
+    </div>
+    <div>
+      <%= f.label :last_name %>
+      <%= f.text_field :last_name %>
+    </div>
+    <div>
+      <%= f.label :email %>
+      <%= f.email_field :email %>
+    </div>
+    <div>
+      <%= f.label :password %>
+      <%= f.password_field :password %>
+    </div>
+    <div>
+      <%= f.label :password_confirmation %>
+      <%= f.password_field :password_confirmation %>
+    </div>
+    <%= f.submit 'Submit' %>
   <% end %>
 
-  <div>
-    <%= f.label :first_name %>
-    <%= f.text_field :first_name %>
-  </div>
-  <div>
-    <%= f.label :last_name %>
-    <%= f.text_field :last_name %>
-  </div>
-  <div>
-    <%= f.label :email %>
-    <%= f.email_field :email %>
-  </div>
-  <div>
-    <%= f.label :password %>
-    <%= f.password_field :password %>
-  </div>
-  <div>
-    <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation %>
-  </div>
-  <%= f.submit 'Submit' %>
-<% end %>
+</div>

@@ -1,0 +1,10 @@
+<p>Hello <%= @product_owner.full_name %>,</p>
+<p> Here is the description of your product! </p>
+<p> Title: <%= @product.title %></p>
+<p> Description: <%= @product.description  %></p>
+<p> Price: <%= @product.price  %></p>
+<p> Sale Price: <%= @product.sale_price  %></p>
+<p>Click <%= link_to "product", product_url(@product) %> to view your product.</p>
+
+<p>Regards,</p>
+<p>Amazon Team</p>
