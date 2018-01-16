@@ -36,6 +36,8 @@ gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'chosen-rails'
 gem 'bootstrap'
+gem 'faraday'
+gem 'active_model_serializers'
 gem 'font-awesome-rails'
 gem 'bcrypt', '~> 3.1.7'
 

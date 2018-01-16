@@ -4,6 +4,7 @@ many_to_many_notes.rb
 notes.rb
 tags_chosen_notes.rb
 votes_on_reviews.rb
+api_notes.rb
 
 # See https://help.github.com/articles/ignoring-files for more about ignoring files.
 #

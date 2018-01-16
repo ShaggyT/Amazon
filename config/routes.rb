@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  namespace :api, defaults: {format: :json} do
+    namespace :v1 do
+      resources :products
+    end
+  end
   match "/delayed_job", to: DelayedJobWeb, anchor: false, via: [:get, :post]
   # get 'tags/index'
   get '/tags' => 'tags#index'
